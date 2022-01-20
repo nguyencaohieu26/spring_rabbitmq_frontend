@@ -4,6 +4,12 @@
        <Navbar/>
       <!--   START MAIN  -->
       <main class="LayoutDefault_main"><slot/></main>
+      <!--      -->
+      <div>
+        <div>
+
+        </div>
+      </div>
       <!-- START FOOTER  -->
       <footer class="LayoutDefault_footer">
         <!--##### START FOOTER TOP-->
@@ -132,10 +138,38 @@
 </template>
 <script>
 import Navbar from "@/components/Navbar";
+const servicesCommit = [
+  {
+    name:'Best prices & offers',
+    des:'Orders 50đ or more',
+    iconLink:'',
+  },
+  {
+    name:'Free delivery',
+    des:'24/7 amazing services',
+    iconLink:'',
+  },
+  {
+    name:'Great daily deal',
+    des:'When you sign up',
+    iconLink:'',
+  },
+  {
+    name:'Wide assortment',
+    des:'Mega discounts',
+    iconLink:'',
+  },
+  {
+    name:'Easy returns',
+    des:'Within 30 days',
+    iconLink:'',
+  },
+]
 export default {
   components: {Navbar},
   data(){
     return{
+      servicesCommit:servicesCommit,
     }
   }
 }

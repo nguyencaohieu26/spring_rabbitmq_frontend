@@ -9,9 +9,10 @@ export default {
   name: 'App',
   data(){
     return{
+
       layout:'div',
     }
-  }
+  },
 }
 </script>
 

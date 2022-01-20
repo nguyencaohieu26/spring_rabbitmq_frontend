@@ -13,8 +13,26 @@
       </div>
       <div class="header__icons-menu">
         <div class="button_cart">
+          <p class="cart__status" v-if="this.$store.state.order.orderDetails.length > 0">{{this.$store.state.order.orderDetails.length}}</p>
           <i class="fas fa-shopping-cart" style="font-size: 1.3rem"></i>
           <p>Cart</p>
+          <div v-if="this.$store.state.order.orderDetails.length > 0" class="cart__container">
+            <div class="cart__item-container">
+              <div class="cart__item" v-for="item in this.$store.state.order.orderDetails" :key="item.id">
+                <div>
+                  <img width="60px" :src="item.thumbnail"/>
+                </div>
+                <div class="cart__item-content">
+                  <p>{{item.name}}</p>
+                  <p>{{item.price.toLocaleString('vi', {style: 'currency', currency: 'VND'})}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="cart__actions">
+              <p>Total Price <span style="color: #3BB77E;font-weight: bold">$100</span></p>
+              <button class="btn__checkout">Check out</button>
+            </div>
+          </div>
         </div>
         <div class="button_account">
           <i class="far fa-user fa-2x" style="font-size: 1.3rem"></i>
@@ -44,9 +62,8 @@
 export default {
   data(){
     return{
-
     }
-  }
+  },
 }
 </script>
 <style scoped>

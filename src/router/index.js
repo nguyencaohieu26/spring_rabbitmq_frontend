@@ -4,6 +4,9 @@ import Home from "@/pages/clients/Home";
 import About from "@/pages/clients/About";
 import Contact from "@/pages/clients/Contact";
 import Blog from "@/pages/clients/Blogs/Blog";
+import {orderRoutes} from "@/pages/admin/adminlogin/order";
+import {accountRoutes} from "@/pages/admin/adminlogin/account";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -12,7 +15,8 @@ const routes = [
             name:'home',
             component:Home,
             meta:{
-                title:'Home'
+                title:'Home',
+                hidden:true,
             }
         },
         {
@@ -20,7 +24,8 @@ const routes = [
             name:'products',
             component: ()=>import('../pages/clients/Products'),
             meta: {
-                title: 'Products'
+                title: 'Products',
+                hidden:true
             }
         },
         {
@@ -28,7 +33,8 @@ const routes = [
             name:'about',
             component: About,
             meta: {
-                title: 'About'
+                title: 'About',
+                hidden: true
             }
         },
         {
@@ -36,7 +42,8 @@ const routes = [
             name:'contact',
             component: Contact,
             meta:{
-                title: 'Contact'
+                title: 'Contact',
+                hidden: true
             }
         },
         {
@@ -44,7 +51,8 @@ const routes = [
             name: 'blogs',
             component:Blog,
             meta: {
-                title: 'Blogs'
+                title: 'Blogs',
+                hidden:true
             },
             children:[
                 {
@@ -56,7 +64,9 @@ const routes = [
                     }
                 }
             ]
-        }
+        },
+    ...orderRoutes,
+    ...accountRoutes
     ];
 //how to manage the routing history in our app
 //when user click somewhere go to different page -> the new page is adding to browsing history
