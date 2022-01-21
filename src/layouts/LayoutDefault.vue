@@ -4,10 +4,23 @@
        <Navbar/>
       <!--   START MAIN  -->
       <main class="LayoutDefault_main"><slot/></main>
-      <!--      -->
-      <div>
-        <div>
-
+      <!--    -->
+      <div class="LayoutDefault_sendEmail">
+        <div style="height: 100%" class="LayoutDefault_sendEmail__theme">
+          <img class="image1" src="/imagesFile/footer_bg.png"/>
+          <img class="image2" src="/imagesFile/banner-9.png"/>
+        </div>
+      </div>
+      <!--##### START GUARANTEE #####-->
+      <div class="LayoutDefault__guarantee">
+        <div class="LayoutDefault__guarantee-item" v-for="item in servicesCommit" :key="item.name">
+            <div>
+              <img v-bind:src="item.iconLink"/>
+            </div>
+          <div>
+            <h3>{{item.name}}</h3>
+            <p>{{item.des}}</p>
+          </div>
         </div>
       </div>
       <!-- START FOOTER  -->
@@ -134,6 +147,12 @@
            </div>
          </div>
       </footer>
+      <!--#### START BACK TO TOP #####-->
+      <div>
+        <a-back-top :visibilityHeight="30">
+          <div class="ant-back-top-inner">UP</div>
+        </a-back-top>
+      </div>
   </div>
 </template>
 <script>
@@ -142,27 +161,27 @@ const servicesCommit = [
   {
     name:'Best prices & offers',
     des:'Orders 50đ or more',
-    iconLink:'',
+    iconLink:'imagesFile/icon-commit.svg',
   },
   {
     name:'Free delivery',
     des:'24/7 amazing services',
-    iconLink:'',
+    iconLink:'imagesFile/icon-commit2.svg',
   },
   {
     name:'Great daily deal',
     des:'When you sign up',
-    iconLink:'',
+    iconLink:'imagesFile/icon-commit3.svg',
   },
   {
     name:'Wide assortment',
     des:'Mega discounts',
-    iconLink:'',
+    iconLink:'imagesFile/icon-commit4.svg',
   },
   {
     name:'Easy returns',
     des:'Within 30 days',
-    iconLink:'',
+    iconLink:'imagesFile/icon-commit5.svg',
   },
 ]
 export default {

@@ -1,7 +1,7 @@
 import http from "@/config";
 
-const getOrders = (params) =>http.get(`orders`,{params:params});
-const createOrder = (data) =>http.get(`orders/add`,data);
-const detailOrder = (id) =>http.get(`orders/${id}`);
+const getOrders   = () =>http.get(`orders`);
+const createOrder = (data) =>http.post(`orders/add`,data);
+const deleteOrder = (id) =>http.delete(`orders/${id}`);
 
-export {getOrders,createOrder,detailOrder}
+export {getOrders,createOrder,deleteOrder}

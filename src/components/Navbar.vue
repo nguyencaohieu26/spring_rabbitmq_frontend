@@ -15,22 +15,30 @@
         <div class="button_cart">
           <p class="cart__status" v-if="this.$store.state.order.orderDetails.length > 0">{{this.$store.state.order.orderDetails.length}}</p>
           <i class="fas fa-shopping-cart" style="font-size: 1.3rem"></i>
-          <p>Cart</p>
-          <div v-if="this.$store.state.order.orderDetails.length > 0" class="cart__container">
+          <p class="cart__name">Cart</p>
+          <div  v-if="this.$store.state.order.orderDetails.length > 0" class="cart__container">
             <div class="cart__item-container">
-              <div class="cart__item" v-for="item in this.$store.state.order.orderDetails" :key="item.id">
-                <div>
-                  <img width="60px" :src="item.thumbnail"/>
-                </div>
+              <div class="cart__item"  v-for="item in this.$store.state.order.orderDetails" :key="item.id">
+                <div><img width="80px" height="80px" :src="item.thumbnail"/></div>
                 <div class="cart__item-content">
-                  <p>{{item.name}}</p>
-                  <p>{{item.price.toLocaleString('vi', {style: 'currency', currency: 'VND'})}}</p>
+                  <div style="display: flex;align-items: center">
+                    <p class="cart__product-name">{{item.name}}</p>
+                    <span class="cart__product-price">{{item.unitPrice.toLocaleString('vi', {style: 'currency', currency: 'VND'})}}</span>
+                  </div>
+                  <div style="margin-top: .5rem;display: flex;justify-content: space-between">
+                    <div @click="onChangeQuantity(item.orderDetailKey.productID)" >
+                      <a-input-number size="small" id="inputNumber" :min="1"  :defaultValue="item.quantity" @change="onQuantityChange" />
+                    </div>
+                  <button class="btn__removeItem"  @click="onRemoveItem(item.orderDetailKey.productID)">x</button>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="cart__actions">
-              <p>Total Price <span style="color: #3BB77E;font-weight: bold">$100</span></p>
-              <button class="btn__checkout">Check out</button>
+              <p>Total Price: <span style="color: #3BB77E;font-weight: bold">${{
+                  this.$store.state.order.orderDetails.reduce((pre,ite)=>{return pre += (ite.unitPrice * ite.quantity)},0)
+                }}</span></p>
+              <button class="btn__checkout" @click="onSubmitOrder">Check out</button>
             </div>
           </div>
         </div>
@@ -58,88 +66,45 @@
   </div>
 </template>
 <script>
+import {createOrder} from "@/pages/admin/adminlogin/order/service";
 
 export default {
   data(){
     return{
+      quantity:0,
+      idProduct:'',
     }
   },
+  methods: {
+    onQuantityChange(value) {
+      this.quantity = value;
+    },
+    onChangeQuantity(item){
+      this.idProduct = item;
+      this.onAddItem();
+    },
+    onRemoveItem(id){
+      /* Commit is a method that vuex give you on it store
+      *  commit take the name of the mutation you want to perform -> a name should be provided as a string
+      * */
+      this.$store.commit('removeItem',{id});
+    },
+    // onHandlerChange(data){
+    //   this.$store.commit('increaseQuantity',{...data,quantity:this.quantity});
+    //   console.log(data);
+    // },
+    onSubmitOrder(){
+      console.log(this.$store.state.order);
+      createOrder(this.$store.state.order);
+      const hide = this.$message.loading('Order in progress..', 0);
+      setTimeout(hide, 3000);
+      this.$store.commit('clearOrder');
+      localStorage.clear();
+    },
+    onAddItem(){
+      this.$store.commit('addQuantity',{id:this.idProduct,quantity:this.quantity});
+    }
+  },
+
 }
 </script>
-<style scoped>
-.header__top{
-  gap: 3rem;
-  display: flex;
-  padding: 25px 0;
-  align-items: center;
-}
-.header__icons-menu{
-  display: flex;
-}
-.header__nav{
-  display: flex;
-  align-items: center;
-  gap: 4rem;
-  padding:10px 2rem;
-  border: 1px solid rgba(211, 206, 206, 0.66);
-
-}
-.header__nav ul{
-  gap: 40px;
-  display: flex;
-}
-.header__nav ul li a{
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #494949;
-}
-.header__nav ul li a:hover{
-  color: #3BB77E;
-  transition: .3s all ease;
-}
-.header__top .header__search{
-  flex-basis: 60%;
-}
-.header__search form input{
-  height: 3rem;
-  width: 100%;
-  border-radius: 3px;
-  padding: 10px;
-  border: 2px solid #269d26;
-  outline: none;
-  color: #777;
-}
-
-.header__search form input::placeholder{
-  font-family: 'Poppins', sans-serif;
-}
-.header__icons-menu{
-  gap: 1rem;
-  display: flex;
-  margin-left: auto;
-}
-.header__icons-menu i{
-  color: #0a0a52;
-  top: -4px;
-  position: relative;
-}
-.header__icons-menu p{
-  color: #777;
-}
-.nav__list-categories{
-  color: white;
-  padding: 10px 30px;
-  border-radius: 6px;
-  background: #3BB77E;
-}
-.nav__list-categories{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.button_cart,.button_account{
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-</style>

@@ -162,7 +162,6 @@
 import LayoutDefault from "@/layouts/LayoutDefault";
 import {getProducts} from "@/pages/clients/Products/service";
 import {getCategories} from "@/pages/clients/Category/service";
-
 const plainOptions = ['Chicken', 'Beef', 'Duck','Goat','Orange','Apple','Banana','Crab','Lobster'];
 const params ={
   name:'',
@@ -227,7 +226,6 @@ export default {
         this.datas = data.datas;
         const categoryGet = await getCategories();
         this.categories =  categoryGet.data.datas;
-        console.log(data.pagination);
         this.totalData = data.pagination.totalItems;
         setTimeout(()=>{this.isLoading = false},500)
       }catch (e){
@@ -263,16 +261,14 @@ export default {
     //handler action add to card
     addToCard(product){
       const listProducts = this.$store.state.order.orderDetails;
-      let isExist = listProducts.find(pro => pro.id == product.id);
+      let isExist = listProducts.find(pro => pro["orderDetailKey"].productID == product.id);
       if(isExist){
         this.$message.error(`The ${product.name} already added`);
         return;
       }else{
         this.$message.success(`Add successfully ${product.name} into card`)
-        this.$store.state.order.orderDetails.push(product);
-        localStorage.setItem('cart',JSON.stringify(this.$store.state.order));
+        this.$store.commit('addItem',this.formatItemProduct(product));
       }
-
     },
     formatItemProduct(product){
       const id = product.id;

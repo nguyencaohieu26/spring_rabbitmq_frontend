@@ -2,7 +2,7 @@
   <a-layout id="components-layout-demo-custom-trigger">
     <a-layout-sider v-model="collapsed" :trigger="null" collapsible>
       <div style="text-align: center;color: white;padding: 1.2rem">
-        Logo
+        Dashboard
       </div>
       <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
         <template v-for="menu in $router.options.routes">
