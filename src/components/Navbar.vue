@@ -13,32 +13,30 @@
       </div>
       <div class="header__icons-menu">
         <div class="button_cart">
-          <p class="cart__status" v-if="this.$store.state.order.orderDetails.length > 0">{{this.$store.state.order.orderDetails.length}}</p>
+          <p class="cart__status" v-if="this.cart != null && this.cart['listCartItems']">{{this.cart != null ? this.cart['listCartItems'].length :''}}</p>
           <i class="fas fa-shopping-cart" style="font-size: 1.3rem"></i>
           <p class="cart__name">Cart</p>
-          <div  v-if="this.$store.state.order.orderDetails.length > 0" class="cart__container">
+          <div v-if="this.cart != null && this.cart['listCartItems']" class="cart__container">
             <div class="cart__item-container">
-              <div class="cart__item"  v-for="item in this.$store.state.order.orderDetails" :key="item.id">
+              <div class="cart__item"  v-for="item in this.cart['listCartItems']" :key="item.productID">
                 <div><img width="80px" height="80px" :src="item.thumbnail"/></div>
                 <div class="cart__item-content">
                   <div style="display: flex;align-items: center">
-                    <p class="cart__product-name">{{item.name}}</p>
+                    <p class="cart__product-name">{{item.productName}}</p>
                     <span class="cart__product-price">{{item.unitPrice.toLocaleString('vi', {style: 'currency', currency: 'VND'})}}</span>
                   </div>
                   <div style="margin-top: .5rem;display: flex;justify-content: space-between">
-                    <div @click="onChangeQuantity(item.orderDetailKey.productID)" >
-                      <a-input-number size="small" id="inputNumber" :min="1"  :defaultValue="item.quantity" @change="onQuantityChange" />
+                    <div @click="updateCartItem(item)">
+                      <a-input-number size="small" id="inputNumber" @change="onChangeValueInput" :defaultValue="item.quantity" :min="1"/>
                     </div>
-                  <button class="btn__removeItem"  @click="onRemoveItem(item.orderDetailKey.productID)">x</button>
+                  <button class="btn__removeItem" @click="removeItemOutCart(item)">x</button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="cart__actions">
-              <p>Total Price: <span style="color: #3BB77E;font-weight: bold">${{
-                  this.$store.state.order.orderDetails.reduce((pre,ite)=>{return pre += (ite.unitPrice * ite.quantity)},0)
-                }}</span></p>
-              <button class="btn__checkout" @click="onSubmitOrder">Check out</button>
+              <p>Total Price: <span style="color: #3BB77E;font-weight: bold">${{this.cart.totalPrice}}</span></p>
+              <button class="btn__checkout">Check out</button>
             </div>
           </div>
         </div>
@@ -66,43 +64,56 @@
   </div>
 </template>
 <script>
+import http from "@/config";
+const access_token = 'abcde';
 
 export default {
   data(){
     return{
       quantity:0,
-      idProduct:'',
+      cart:[],
     }
   },
+  created() {
+    this.getCart();
+  },
   methods: {
-    // onQuantityChange(value) {
-    //   this.quantity = value;
-    // },
-    // onChangeQuantity(item){
-    //   this.idProduct = item;
-    //   this.onAddItem();
-    // },
-      /* Commit is a method that vuex give you on it store
-      *  commit take the name of the mutation you want to perform -> a name should be provided as a string
-      * */
-    // onRemoveItem(id){
-    //   this.$store.commit('removeItem',{id});
-    // },
-    // onHandlerChange(data){
-    //   this.$store.commit('increaseQuantity',{...data,quantity:this.quantity});
-    //   console.log(data);
-    // },
-    // onSubmitOrder(){
-    //   console.log(this.$store.state.order);
-    //   createOrder(this.$store.state.order);
-    //   const hide = this.$message.loading('Order in progress..', 0);
-    //   setTimeout(hide, 3000);
-    //   this.$store.commit('clearOrder');
-    //   localStorage.clear();
-    // },
-    // onAddItem(){
-    //   this.$store.commit('addQuantity',{id:this.idProduct,quantity:this.quantity});
-    // }
+    async getCart(){
+      const {data} = await http.get(`cart/getListItem?access_token=${access_token}`)
+      this.cart = data.datas[0];
+      console.log(this.cart);
+    },
+
+    removeItemOutCart(product){
+      async function removeItem(){
+        await http.get(`/cart/removeCartItem/${product.productID}?access_token=${access_token}`);
+      }
+      removeItem();
+      setTimeout(()=>{
+        this.getCart();
+        this.$message.success(`Remove ${product.productName} successfully`);
+      },400);
+    },
+    onChangeValueInput(value){
+      this.quantity = value;
+    },
+    updateCartItem(item){
+      const pro = {
+        "productID": item.productID,
+        "productName": item.productName,
+        "thumbnail": item.thumbnail,
+        "unitPrice":item.unitPrice,
+        "quantity":this.quantity
+      }
+      async function update(){
+        await http.post(`/cart/update?access_token=${access_token}`,pro);
+      }
+      update();
+      setTimeout(()=>{
+        this.getCart();
+      },400);
+    }
+
   },
 
 }

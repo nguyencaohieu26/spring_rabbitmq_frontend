@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const configAxios = {
     baseURL:'http://localhost:9191/api/v1',
     timeout:2 * 60 * 1000

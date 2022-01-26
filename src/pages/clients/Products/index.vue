@@ -162,6 +162,7 @@
 import LayoutDefault from "@/layouts/LayoutDefault";
 import {getProducts} from "@/pages/clients/Products/service";
 import {getCategories} from "@/pages/clients/Category/service";
+import http from "@/config";
 const plainOptions = ['Chicken', 'Beef', 'Duck','Goat','Orange','Apple','Banana','Crab','Lobster'];
 const params ={
   name:'',
@@ -260,16 +261,15 @@ export default {
     },
     //handler action add to card
     addToCard(product){
-      const listProducts = this.$store.state.order.orderDetails;
-      let isExist = listProducts.find(pro => pro["orderDetailKey"].productID == product.id);
-      if(isExist){
-        this.$message.error(`The ${product.name} already added`);
-        return;
-      }else{
-        this.$message.success(`Add successfully ${product.name} into card`)
-        this.$store.commit('addItem',this.formatItemProduct(product));
+      const productCovert = this.formatItemProduct(product);
+        // console.log(this.formatItemProduct(product));
+      async function addProductToCart(){
+        await http.post(`/cart/add?access_token=abcde`,productCovert)
       }
+      addProductToCart();
+      this.$message.success(`Add ${productCovert.productName} successfully`);
     },
+
     formatItemProduct(product){
       const id = product.id;
       const quantity = 1;
@@ -277,11 +277,9 @@ export default {
       const namePro = product.name;
       const thumbnail = product.thumbnail;
       return {
-        "orderDetailKey":{
-          "productID":id,
-        },
-        name:namePro,
-        thumbnail:thumbnail,
+        "productID":id,
+        "productName":namePro,
+        "thumbnail":thumbnail,
         "quantity":quantity,
         "unitPrice":unitPrice
       }
