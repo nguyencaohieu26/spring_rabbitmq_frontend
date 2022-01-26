@@ -66,7 +66,6 @@
   </div>
 </template>
 <script>
-import {createOrder} from "@/pages/admin/adminlogin/order/service";
 
 export default {
   data(){
@@ -76,34 +75,34 @@ export default {
     }
   },
   methods: {
-    onQuantityChange(value) {
-      this.quantity = value;
-    },
-    onChangeQuantity(item){
-      this.idProduct = item;
-      this.onAddItem();
-    },
-    onRemoveItem(id){
+    // onQuantityChange(value) {
+    //   this.quantity = value;
+    // },
+    // onChangeQuantity(item){
+    //   this.idProduct = item;
+    //   this.onAddItem();
+    // },
       /* Commit is a method that vuex give you on it store
       *  commit take the name of the mutation you want to perform -> a name should be provided as a string
       * */
-      this.$store.commit('removeItem',{id});
-    },
+    // onRemoveItem(id){
+    //   this.$store.commit('removeItem',{id});
+    // },
     // onHandlerChange(data){
     //   this.$store.commit('increaseQuantity',{...data,quantity:this.quantity});
     //   console.log(data);
     // },
-    onSubmitOrder(){
-      console.log(this.$store.state.order);
-      createOrder(this.$store.state.order);
-      const hide = this.$message.loading('Order in progress..', 0);
-      setTimeout(hide, 3000);
-      this.$store.commit('clearOrder');
-      localStorage.clear();
-    },
-    onAddItem(){
-      this.$store.commit('addQuantity',{id:this.idProduct,quantity:this.quantity});
-    }
+    // onSubmitOrder(){
+    //   console.log(this.$store.state.order);
+    //   createOrder(this.$store.state.order);
+    //   const hide = this.$message.loading('Order in progress..', 0);
+    //   setTimeout(hide, 3000);
+    //   this.$store.commit('clearOrder');
+    //   localStorage.clear();
+    // },
+    // onAddItem(){
+    //   this.$store.commit('addQuantity',{id:this.idProduct,quantity:this.quantity});
+    // }
   },
 
 }
