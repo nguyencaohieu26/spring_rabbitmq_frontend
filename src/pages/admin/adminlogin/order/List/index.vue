@@ -16,7 +16,7 @@
       </span>
     </a-table>
     <div>
-      <a-pagination style="margin-top: 15px" :total="totalData" show-less-items @change="onChangePage"/>
+      <a-pagination style="margin-top: 15px" :total="totalData" @change="onChangePage"/>
     </div>
   </a-card>
 </template>
@@ -82,9 +82,8 @@ export default {
     //Get All Order
     async getData(){
       try{
-        const {data} = await getOrders();
+        const {data} = await getOrders(this.params);
         this.datas = data.datas;
-        console.log(data);
         console.log(data.pagination.totalItems);
         this.totalData = data.pagination.totalItems;
       }catch (e){
@@ -92,6 +91,7 @@ export default {
       }
     },
     onChangePage(current){
+      console.log(current);
       this.params.page = current;
       this.getData();
     },

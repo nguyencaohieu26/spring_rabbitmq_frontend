@@ -162,8 +162,6 @@
 import LayoutDefault from "@/layouts/LayoutDefault";
 import {getProducts} from "@/pages/clients/Products/service";
 import {getCategories} from "@/pages/clients/Category/service";
-import http from "@/config";
-const plainOptions = ['Chicken', 'Beef', 'Duck','Goat','Orange','Apple','Banana','Crab','Lobster'];
 const params ={
   name:'',
   id:'',
@@ -173,40 +171,26 @@ const params ={
   maxPrice:undefined,
   category_id:undefined
 }
-const newProductsData = [
-  {
-    imgURL: "https://images.unsplash.com/photo-1582655299221-2b6bff351df0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=881&q=80",
-    name:'Mango Chia Pudding',
-    price:30,
-    urlLink:'/products'
-  },
-  {
-    imgURL: "https://images.unsplash.com/photo-1632151944296-033b364f44b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
-    name:'Watermelon Popsicles',
-    price:23,
-    urlLink:'/products'
-  },
-  {
-    imgURL: "https://images.unsplash.com/photo-1592839971356-a9a5d258c1af?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80",
-    name:'Fresh Orange juice',
-    price:13,
-    urlLink:'/products'
-  }
-]
 export default {
   data(){
     return{
-      plainOptions,
       isLoading:false,
       datas:[],
       countNum:0,
       categories:[],
       value: [],
       orderDetails:[],
-      newProductsData:newProductsData,
       params:params,
       totalData:undefined,
-      dataGet:{"account_id":1,"orderDetails":[]}
+      dataCart:[],
+    }
+  },
+  computed:{
+    newProductsData(){
+      return this.$store.state.newProductsData;
+    },
+    plainOptions(){
+      return this.$store.state.plainOptions;
     }
   },
   created() {
@@ -259,17 +243,11 @@ export default {
       this.params.category_id = parseInt(cate)
       this.getData()
     },
-    //handler action add to card
     addToCard(product){
-      const productCovert = this.formatItemProduct(product);
-        // console.log(this.formatItemProduct(product));
-      async function addProductToCart(){
-        await http.post(`/cart/add?access_token=abcde`,productCovert)
-      }
-      addProductToCart();
-      this.$message.success(`Add ${productCovert.productName} successfully`);
+      const productConvert = this.formatItemProduct(product)
+      this.$message.success(`Add ${productConvert.productName} successful`);
+      this.$store.dispatch('addProductToCart',{product:productConvert});
     },
-
     formatItemProduct(product){
       const id = product.id;
       const quantity = 1;
@@ -277,6 +255,7 @@ export default {
       const namePro = product.name;
       const thumbnail = product.thumbnail;
       return {
+        "id":1,
         "productID":id,
         "productName":namePro,
         "thumbnail":thumbnail,
