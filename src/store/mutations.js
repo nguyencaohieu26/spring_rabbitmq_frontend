@@ -33,4 +33,12 @@ export const UPDATE_CART = (state,response)=>{
     state.cart = response.data.datas[0];
     state.cartItemCount = response.data.datas[0]['listCartItems'].length;
 }
+
 //handler mutations for product
+export  const GET_PRODUCTS = (state,products)=>{
+    state.products = products;
+}
+//handler mutations for category
+export  const GET_CATEGORIES = (state,categories)=>{
+    state.categories = categories;
+}

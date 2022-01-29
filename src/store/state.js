@@ -2,6 +2,7 @@
 export default{
     cart:[],
     products:[],
+    categories:[],
     cartItemCount:0,
     newProductsData:[
         {

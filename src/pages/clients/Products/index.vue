@@ -16,9 +16,9 @@
     <div>
       <div class="products__content">
         <!--##### START PRODUCT LIST #####-->
-        <div  class="products__list">
-          <div v-if="datas.length > 0" style="display: flex;justify-content: space-between;margin-bottom: 1.2rem;align-items: center">
-            <p>We found <span style="color:#3BB77E">{{totalData}}</span> {{datas.length  == 1 ? "item" : "item"}} for you!</p>
+        <div  class="products__list" v-if="products['datas']">
+          <div style="display: flex;justify-content: space-between;margin-bottom: 1.2rem;align-items: center">
+            <p>We found <span style="color:#3BB77E">{{products.pagination == undefined ? '0' : products.pagination.totalItems}}</span> items for you!</p>
             <div>
               <a-select style="width: 200px" v-model="params.sortType" placeholder="Sort by" @change="onHandlerSort">
                 <a-select-option value="1">Name Ascending</a-select-option>
@@ -28,9 +28,9 @@
               </a-select>
             </div>
           </div>
-          <div v-if="datas.length > 0" style="height: 100%;display: flex;flex-direction: column;justify-content: space-between">
+          <div v-if="products['datas'].length != 0" style="height: 100%;display: flex;flex-direction: column;justify-content: space-between">
             <a-row :gutter="[16,16]">
-              <a-col v-for="data in datas" :key ="data.id" :span="6">
+              <a-col v-for="data in products['datas']" :key ="data.id" :span="6">
                 <div style="background:#ECECEC">
                   <a-card :bordered="false">
                     <div class="product__thumbnail">
@@ -57,11 +57,11 @@
               </a-col>
             </a-row>
             <div style="margin-bottom:3rem">
-              <a-pagination :total="totalData" @change="onChangePage" />
+              <a-pagination :total="products.pagination == undefined ? 0 : products.pagination.totalItems" @change="onChangePage" />
             </div>
           </div>
           <!--##### START NODATA CONTAINER #####-->
-          <div v-else class="container__nodata" style="height: 100%">
+          <div v-else class="container__nodata">
             <a-icon style="font-size: 40px" type="inbox" />
             <p>No data found!</p>
           </div>
@@ -73,7 +73,7 @@
             <h3 class="text__underline--green text__underline--green">Product Search</h3>
             <div>
               <div id="components-form-demo-advanced-search" style="margin-bottom: 15px;margin-top: 30px">
-                <a-form class="ant-advanced-search-form" @submit="handleSearch">
+                <a-form class="ant-advanced-search-form" @submit.p.prevent="handleSearch">
                   <a-row>
                     <a-col>
                       <a-form-item>
@@ -160,8 +160,6 @@
 </template>
 <script>
 import LayoutDefault from "@/layouts/LayoutDefault";
-import {getProducts} from "@/pages/clients/Products/service";
-import {getCategories} from "@/pages/clients/Category/service";
 const params ={
   name:'',
   id:'',
@@ -175,15 +173,13 @@ export default {
   data(){
     return{
       isLoading:false,
-      datas:[],
-      countNum:0,
-      categories:[],
       value: [],
-      orderDetails:[],
       params:params,
-      totalData:undefined,
-      dataCart:[],
     }
+  },
+  mounted() {
+    this.$store.dispatch('getProducts',this.params);
+    this.$store.dispatch('getCategories');
   },
   computed:{
     newProductsData(){
@@ -191,57 +187,40 @@ export default {
     },
     plainOptions(){
       return this.$store.state.plainOptions;
-    }
+    },
+    products(){
+      return this.$store.state.products;
+    },
+    categories(){
+      return this.$store.state.categories;
+    },
   },
   created() {
     this.$emit('update:layout',LayoutDefault)
-    this.getData();
   },
   methods:{
-    //handler for group checkbox
     onChangeCheckbox(checkedValues) {
       console.log('checked = ', checkedValues);
-      console.log('value = ', this.value);
     },
-    //handler for get data
-    async getData(){
-      try{
-        this.isLoading = true;
-        const {data} = await getProducts(this.params);
-        this.datas = data.datas;
-        const categoryGet = await getCategories();
-        this.categories =  categoryGet.data.datas;
-        this.totalData = data.pagination.totalItems;
-        setTimeout(()=>{this.isLoading = false},500)
-      }catch (e){
-        console.log(e);
-        setTimeout(()=>{this.isLoading = false},500)
-      }
-    },
-    //handler for price slider
     onPriceChange(value) {
       this.params.minPrice = value[0];
-      setTimeout(()=>{this.getData();},500)
-      console.log(this.params);
+      this.$store.dispatch('getProducts',this.params);
     },
     onPriceAfterChange(value) {
       this.params.maxPrice = value[1];
-      setTimeout(()=>{this.getData();},500)
-      console.log(this.params);
+      this.$store.dispatch('getProducts',this.params);
     },
     onHandlerSort(value){
       this.params.sortType = value;
-      this.getData();
+      this.$store.dispatch('getProducts',this.params);
     },
-    //handler for change pages
     onChangePage(current){
       this.params.page = current;
-      this.getData();
+      this.$store.dispatch('getProducts',this.params);
     },
-    //handler for select category
     handleCate(cate){
       this.params.category_id = parseInt(cate)
-      this.getData()
+      this.$store.dispatch('getProducts',this.params);
     },
     addToCard(product){
       const productConvert = this.formatItemProduct(product)
@@ -263,13 +242,10 @@ export default {
         "unitPrice":unitPrice
       }
     },
-    //handler search form
-    handleSearch(e){
-      e.preventDefault();
+    handleSearch(){
       this.params.page = 1;
-      this.getData();
+      this.$store.dispatch('getProducts',this.params);
     },
-    //handler reset search form
     handleReset() {
       this.params.minPrice = undefined;
       this.params.maxPrice = undefined;
@@ -277,7 +253,7 @@ export default {
       this.params.sortType = undefined;
       this.params.id = '';
       this.params.name = '';
-      this.getData();
+      this.$store.dispatch('getProducts',this.params);
     },
   }
 }

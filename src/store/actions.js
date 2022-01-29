@@ -1,6 +1,7 @@
 import http from "@/config";
 const access_token = 'abcde';
 
+//handler action for cart
 export const getCart = ({commit})=>{
     http.get(`cart/getListItem?access_token=${access_token}`)
         .then(response =>{
@@ -29,4 +30,17 @@ export const updateCart = ({commit},product)=>{
         .then(response =>{
             commit('UPDATE_CART',response)
         });
+}
+//handler action for products
+export const getProducts =({commit},params)=>{
+    http.get(`products/list`, {params: params})
+        .then(response =>{
+            commit('GET_PRODUCTS',response.data)
+        })
+}
+//handler action for category
+export const getCategories = ({commit})=>{
+    http.get(`/categories`).then(response =>{
+        commit('GET_CATEGORIES',response.data.datas)
+    })
 }
