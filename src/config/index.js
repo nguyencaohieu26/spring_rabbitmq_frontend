@@ -1,10 +1,23 @@
 import axios from "axios";
-const configAxios = {
+
+const configAxiosInventory = {
+    baseURL:'http://localhost:9090/api/v1',
+    timeout:2 * 60 * 1000,
+    headers:{
+        "Access-Token":"nguyencaohieu",
+    }
+}
+const configAxiosOrder = {
     baseURL:'http://localhost:9191/api/v1',
-    timeout:2 * 60 * 1000
+    timeout:2 * 60 * 1000,
+    headers:{
+        "Access-Token":"nguyencaohieu",
+    }
 }
 
-    const http = axios.create(configAxios);
+
+    export const httpInventoryService = axios.create(configAxiosInventory);
+    export const httpOrderService     = axios.create(configAxiosOrder);
 
 // const handlerError = (error) =>{
 //     if(error.response.status === 400){
@@ -28,4 +41,3 @@ const configAxios = {
 //     return Promise.resolve(res);
 // },handlerError);
 
-export default http;

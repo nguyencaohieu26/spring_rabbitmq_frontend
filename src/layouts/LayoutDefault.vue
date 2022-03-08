@@ -9,6 +9,38 @@
         <div style="height: 100%" class="LayoutDefault_sendEmail__theme">
           <img class="image1" src="/imagesFile/footer_bg.png"/>
           <img class="image2" src="/imagesFile/banner-9.png"/>
+          <div class="content-sendEmail">
+            <h4>Stay home & get your daily<br> needs from our shop</h4>
+            <p>Start Your Daily Shopping with <router-link to="/">Nest Mart</router-link></p>
+            <template>
+              <a-form :form="form" @submit.prevent="handleSubmit">
+                <a-form-item>
+                  <a-input
+                      placeholder="Your email address"
+                      v-decorator="[
+                        'email',
+                        {
+                          rules: [
+                            {
+                              type: 'email',
+                              message: 'The input is not valid E-mail!',
+                            },
+                            {
+                              required: true,
+                              message: 'Please input your E-mail!',
+                            },
+                          ],
+                        },
+                      ]"/>
+                </a-form-item>
+                <div class="icon"><i class="fa-solid fa-paper-plane"></i></div>
+                <a-form-item>
+                  <a-button class="btn-submit-sendEmail" html-type="submit">Subscribe</a-button>
+                </a-form-item>
+
+              </a-form>
+            </template>
+          </div>
         </div>
       </div>
       <!--##### START GUARANTEE #####-->
@@ -161,27 +193,27 @@ const servicesCommit = [
   {
     name:'Best prices & offers',
     des:'Orders 50đ or more',
-    iconLink:'imagesFile/icon-commit.svg',
+    iconLink:'../imagesFile/icon-commit.svg',
   },
   {
     name:'Free delivery',
     des:'24/7 amazing services',
-    iconLink:'imagesFile/icon-commit2.svg',
+    iconLink:'../imagesFile/icon-commit2.svg',
   },
   {
     name:'Great daily deal',
     des:'When you sign up',
-    iconLink:'imagesFile/icon-commit3.svg',
+    iconLink:'../imagesFile/icon-commit3.svg',
   },
   {
     name:'Wide assortment',
     des:'Mega discounts',
-    iconLink:'imagesFile/icon-commit4.svg',
+    iconLink:'../imagesFile/icon-commit4.svg',
   },
   {
     name:'Easy returns',
     des:'Within 30 days',
-    iconLink:'imagesFile/icon-commit5.svg',
+    iconLink:'../imagesFile/icon-commit5.svg',
   },
 ]
 export default {
@@ -189,7 +221,17 @@ export default {
   data(){
     return{
       servicesCommit:servicesCommit,
+      form: this.$form.createForm(this, { name: 'coordinated' }),
     }
+  },
+  methods:{
+    handleSubmit() {
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
+      });
+    },
   }
 }
 </script>

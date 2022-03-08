@@ -3,15 +3,7 @@
     <!--##### OVERLAY LOADING #####-->
     <div class="overlay" v-if="isLoading"><div class="lds-ripple"><div></div><div></div></div></div>
     <!--##### START PRODUCT BANNER #####-->
-    <div class="products__banner">
-      <img src="../../../assets/images/header-bg.png">
-      <div class="products__banner-content">
-        <h1>Products</h1>
-        <router-link to="/">
-          <a-icon type="home" /> Home
-        </router-link><span style="color: #3a3535"> > Products</span>
-      </div>
-    </div>
+    <Banner imgURL="imagesFile/header-bg.png" name="Products"/>
     <!--##### START PRODUCT CONTENT-->
     <div>
       <div class="products__content">
@@ -31,7 +23,7 @@
           <div v-if="products['datas'].length != 0" style="height: 100%;display: flex;flex-direction: column;justify-content: space-between">
             <a-row :gutter="[16,16]">
               <a-col v-for="data in products['datas']" :key ="data.id" :span="6">
-                <div style="background:#ECECEC">
+                <div style="background:#ECECEC;border: 1px solid rgba(148,232,192,0.53)">
                   <a-card :bordered="false">
                     <div class="product__thumbnail">
                       <img :src="data.thumbnail"/>
@@ -45,9 +37,10 @@
                           <a-icon type="star" theme="filled" style="color: #FFDD00"/>
                         </div>
                       </div>
+<!--                      <router-link :to="{name:'productdetail',params:{id:data.id}}" class="name">{{data.name}}</router-link>-->
                       <p class="name">{{data.name}}</p>
                       <div class="product__content-action">
-                        <p class="price">{{ data.price.toLocaleString('vi', {style: 'currency', currency: 'VND'}) }}</p>
+                        <p class="price">{{data.price.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'}) }}</p>
                         <button class="btn__addCart" @click="addToCard(data)">
                           <a-icon type="shopping-cart" />Add</button>
                       </div>
@@ -156,9 +149,13 @@
         </div>
       </div>
     </div>
+    <router-view>
+      <div>"Admin" page content</div>
+    </router-view>
   </div>
 </template>
 <script>
+import Banner from "@/components/Banner";
 import LayoutDefault from "@/layouts/LayoutDefault";
 const params ={
   name:'',
@@ -170,6 +167,7 @@ const params ={
   category_id:undefined
 }
 export default {
+  components: {Banner},
   data(){
     return{
       isLoading:false,

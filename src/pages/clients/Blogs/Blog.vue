@@ -1,11 +1,13 @@
 <template>
   <div class="main__blog container">
-    <h3>This is blog page</h3>
+    <Banner imgURL="imagesFile/header-bg.png" name="Blogs"/>
   </div>
 </template>
 <script>
+import Banner from "@/components/Banner";
 import LayoutDefault from "@/layouts/LayoutDefault";
 export default {
+  components: {Banner},
   data(){
     return{
 
